@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Description: AWS SAM CLI Nested Stack for Auto Dependency Layer Creation
+Metadata:
+  SamCliInfo: 1.99.0
+  key: AWS SAM CLI sync command
+Outputs:
+  CreateProductFunction263349a8DepLayer:
+    Value:
+      Ref: CreateProductFunction263349a8DepLayer
+  DeleteProductFunction248ee77cDepLayer:
+    Value:
+      Ref: DeleteProductFunction248ee77cDepLayer
+  GetProductFunctionf1cfed1cDepLayer:
+    Value:
+      Ref: GetProductFunctionf1cfed1cDepLayer
+  ListProductsFunction2507765eDepLayer:
+    Value:
+      Ref: ListProductsFunction2507765eDepLayer
+  UpdateProductFunction0ad4279aDepLayer:
+    Value:
+      Ref: UpdateProductFunction0ad4279aDepLayer
+Resources:
+  CreateProductFunction263349a8DepLayer:
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      CompatibleRuntimes:
+      - nodejs18.x
+      ContentUri: /Users/amitrai/nodejs-proj/my-june-2024/product-api/.aws-sam/auto-dependency-layer/CreateProductFunction263349a8DepLayer
+      Description: Auto created layer for dependencies of function CreateProductFunction
+      LayerName: product-service1e0d1127-CreateProductFunction263349a8-DepLayer
+      RetentionPolicy: Delete
+    Type: AWS::Serverless::LayerVersion
+  DeleteProductFunction248ee77cDepLayer:
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      CompatibleRuntimes:
+      - nodejs18.x
+      ContentUri: /Users/amitrai/nodejs-proj/my-june-2024/product-api/.aws-sam/auto-dependency-layer/DeleteProductFunction248ee77cDepLayer
+      Description: Auto created layer for dependencies of function DeleteProductFunction
+      LayerName: product-service1e0d1127-DeleteProductFunction248ee77c-DepLayer
+      RetentionPolicy: Delete
+    Type: AWS::Serverless::LayerVersion
+  GetProductFunctionf1cfed1cDepLayer:
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      CompatibleRuntimes:
+      - nodejs18.x
+      ContentUri: /Users/amitrai/nodejs-proj/my-june-2024/product-api/.aws-sam/auto-dependency-layer/GetProductFunctionf1cfed1cDepLayer
+      Description: Auto created layer for dependencies of function GetProductFunction
+      LayerName: product-service1e0d1127-GetProductFunctionf1cfed1c-DepLayer
+      RetentionPolicy: Delete
+    Type: AWS::Serverless::LayerVersion
+  ListProductsFunction2507765eDepLayer:
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      CompatibleRuntimes:
+      - nodejs18.x
+      ContentUri: /Users/amitrai/nodejs-proj/my-june-2024/product-api/.aws-sam/auto-dependency-layer/ListProductsFunction2507765eDepLayer
+      Description: Auto created layer for dependencies of function ListProductsFunction
+      LayerName: product-service1e0d1127-ListProductsFunction2507765e-DepLayer
+      RetentionPolicy: Delete
+    Type: AWS::Serverless::LayerVersion
+  UpdateProductFunction0ad4279aDepLayer:
+    Metadata:
+      CreatedBy: AWS SAM CLI sync command
+    Properties:
+      CompatibleRuntimes:
+      - nodejs18.x
+      ContentUri: /Users/amitrai/nodejs-proj/my-june-2024/product-api/.aws-sam/auto-dependency-layer/UpdateProductFunction0ad4279aDepLayer
+      Description: Auto created layer for dependencies of function UpdateProductFunction
+      LayerName: product-service1e0d1127-UpdateProductFunction0ad4279a-DepLayer
+      RetentionPolicy: Delete
+    Type: AWS::Serverless::LayerVersion
+Transform: AWS::Serverless-2016-10-31

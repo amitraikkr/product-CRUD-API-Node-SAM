@@ -1,0 +1,217 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: Product Service
+Globals:
+  Function:
+    Timeout: 10
+    Runtime: nodejs18.x
+    CodeUri: .
+    Environment:
+      Variables:
+        TABLE_NAME:
+          Ref: ProductsTable
+Resources:
+  ProductsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: Products
+      AttributeDefinitions:
+      - AttributeName: ProductId
+        AttributeType: S
+      KeySchema:
+      - AttributeName: ProductId
+        KeyType: HASH
+      BillingMode: PAY_PER_REQUEST
+  CreateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/createProduct.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: ProductsTable
+      - Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: arn:aws:logs:*:*:*
+      CodeUri: CreateProductFunction
+    Metadata:
+      SamResourceId: CreateProductFunction
+  GetProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/getProduct.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: ProductsTable
+      - Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: arn:aws:logs:*:*:*
+      CodeUri: GetProductFunction
+    Metadata:
+      SamResourceId: GetProductFunction
+  UpdateProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/updateProduct.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: ProductsTable
+      - Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: arn:aws:logs:*:*:*
+      CodeUri: UpdateProductFunction
+    Metadata:
+      SamResourceId: UpdateProductFunction
+  DeleteProductFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/deleteProduct.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: ProductsTable
+      - Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: arn:aws:logs:*:*:*
+      CodeUri: DeleteProductFunction
+    Metadata:
+      SamResourceId: DeleteProductFunction
+  ListProductsFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: src/listProduct.handler
+      Policies:
+      - DynamoDBCrudPolicy:
+          TableName:
+            Ref: ProductsTable
+      - Statement:
+        - Effect: Allow
+          Action:
+          - logs:CreateLogGroup
+          - logs:CreateLogStream
+          - logs:PutLogEvents
+          Resource: arn:aws:logs:*:*:*
+      CodeUri: ListProductsFunction
+    Metadata:
+      SamResourceId: ListProductsFunction
+  ProductApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      DefinitionBody:
+        openapi: 3.0.1
+        info:
+          title: Product API
+          description: API for managing products
+          version: 1.0.0
+        paths:
+          /products:
+            get:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ListProductsFunction.Arn}/invocations
+                httpMethod: GET
+                type: aws_proxy
+            post:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${CreateProductFunction.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+          /products/{id}:
+            get:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${GetProductFunction.Arn}/invocations
+                httpMethod: GET
+                type: aws_proxy
+            put:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${UpdateProductFunction.Arn}/invocations
+                httpMethod: PUT
+                type: aws_proxy
+            delete:
+              x-amazon-apigateway-integration:
+                uri:
+                  Fn::Sub: arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${DeleteProductFunction.Arn}/invocations
+                httpMethod: DELETE
+                type: aws_proxy
+  CreateProductPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::GetAtt:
+        - CreateProductFunction
+        - Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProductApi}/*/POST/products
+  GetProductPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::GetAtt:
+        - GetProductFunction
+        - Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProductApi}/*/GET/products/*
+  UpdateProductPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::GetAtt:
+        - UpdateProductFunction
+        - Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProductApi}/*/PUT/products/*
+  DeleteProductPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::GetAtt:
+        - DeleteProductFunction
+        - Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProductApi}/*/DELETE/products/*
+  ListProductsPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      FunctionName:
+        Fn::GetAtt:
+        - ListProductsFunction
+        - Arn
+      Action: lambda:InvokeFunction
+      Principal: apigateway.amazonaws.com
+      SourceArn:
+        Fn::Sub: arn:aws:execute-api:${AWS::Region}:${AWS::AccountId}:${ProductApi}/*/GET/products
+Outputs:
+  ApiUrl:
+    Description: URL for the APIs
+    Value:
+      Fn::Sub: https://${ProductApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/
